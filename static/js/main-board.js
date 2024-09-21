@@ -1,7 +1,7 @@
 import { Chess } from '/static/js/chess.js'
-const stockfish = new Worker("/static/js/stockfish-16.1-lite-single.js");
-stockfish.postMessage('uci')
-console.log('loading stockfish')
+import { initStockfish, stockfish_eval } from './stockfish-manager.js'
+
+// State variables
 var board = null
 var game = new Chess()
 var $status = $('#status')
@@ -9,6 +9,10 @@ var $fen = $('#fen')
 var $pgn = $('#pgn')
 var $eval = $('#eval')
 
+// Initialize Stockfish
+const stockfish = await initStockfish($eval);
+
+// Allow 
 function onDragStart (source, piece, position, orientation) {
   // do not pick up pieces if the game is over
   if (game.game_over()) return false
@@ -20,15 +24,14 @@ function onDragStart (source, piece, position, orientation) {
   }
 }
 
-function onDrop (source, target) {
-  console.log(source, target)
+async function onDrop (source, target) {
   // see if the move is legal
   var move = game.move({
     from: source,
     to: target,
     promotion: 'q' // NOTE: always promote to a queen for example simplicity
   })
-
+  console.log(move)
   // illegal move
   if (move === null) return 'snapback'
 
@@ -43,11 +46,13 @@ function onDrop (source, target) {
   ).then(
     (response => response.json())
   ).then((data => {
-      game = new Chess(data.fen)
-      console.log(game.fen())
+      var c = game.move(
+        data.move
+      )
+      console.log(c, data.move)
   }))
   
-  updateStatus()
+  await updateStatus()
 }
 
 // update the board position after the piece snap
@@ -56,7 +61,7 @@ function onSnapEnd () {
   board.position(game.fen())
 }
 
-function updateStatus () {
+async function updateStatus () {
   var status = ''
 
   var moveColor = 'White'
@@ -87,23 +92,9 @@ function updateStatus () {
   $status.html(status)
   $fen.html(game.fen())
   $pgn.html(game.pgn())
+
   // Make post request to backend with the PGN or FEN
-  sendMoveToStockfish(game.fen());
-}
-
-
-stockfish.onmessage = function(e) {
-    const scoreMatch = e.data.match(/score (cp|mate) (-?\d+)/);
-    if (scoreMatch) {
-      const scoreValue = parseInt(scoreMatch[2]);
-      $eval.html(scoreValue)
-    }
-};
-
-function sendMoveToStockfish(fen) {
-    stockfish.postMessage('ucinewgame');  // Start a new game
-    stockfish.postMessage(`position fen ${fen}`);  // Set the position
-    stockfish.postMessage('go depth 10');  // Analyze to a depth of 10
+  await stockfish_eval(stockfish, game.fen())
 }
 
 var config = {
@@ -114,6 +105,7 @@ var config = {
   onDrop: onDrop,
   onSnapEnd: onSnapEnd
 }
+
 board = Chessboard('myBoard', config)
 
-updateStatus()
+await updateStatus();

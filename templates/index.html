@@ -3,26 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chessboard.js Example</title>
+    <title>ChessAssistant</title>
     <!-- Stylesheets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/chessboard-1.0.0.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
     <!-- Libraries -->
     <script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/chessboard-1.0.0.js')}}"></script>
     <script type='module' src="{{ url_for('static', filename='js/chess.js')}}"></script>
     <script type='module' src="{{ url_for('static', filename='js/stockfish-16.1-lite-single.js')}}"></script>
+    <script type='module' src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
 </head>
+<body class='bg-dark'>
 
-<body>
-<div id="myBoard" style="width: 400px"></div>
-<label>Status:</label>
-<div id="status"></div>
-<label>FEN:</label>
-<div id="fen"></div>
-<label>PGN:</label>
-<div id="pgn"></div>
-<label>Rating:</label>
-<div id="eval"></div>
+<div class="container-sm" style="padding-top: 1cm">
+    <div class="row justify-content-center text-center">
+        <div class="col-6">
+            <div id="myBoard" style="width: 500px"></div>
+        </div>
+        <div class="col-3">
+            <div class="card">
+                <div class="card-header">
+                    <span class="badge rounded-pill bg-success">
+                        Info
+                    </span>
+                </div>
+                <div class="card-body">
+                    <label>PGN:</label>
+                    <div id="pgn"></div>
+                    <label>Rating:</label>
+                    <div id="eval"></div>
+                    <div class="progress">
+                        <div class="progress-bar bg-secondary" style="width: 50%" role="progressbar"></div>
+                        <div class="progress-bar bg-black" style="width: 50%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mx-auto" style="max-width: 40%; padding-top: 1cm">
+
+    </div>
+    <div class="row" style="padding-top: 1cm;">
+        <div class='card' style="max-width: fit-content;">
+            <div class="mb-3">
+                <label for="new-game-fen" class="form-label">New Game (FEN)</label>
+                <input type="text" class="form-control" id="new-game-fen" style="max-width: fit-content;">
+              </div>
+              <button type="submit" class="btn btn-primary">New Game</button>
+        </div>
+    </div>
+</div>
+
 
 <script type='module' src="{{ url_for('static', filename='js/main-board.js')}}"></script>
 </body>
