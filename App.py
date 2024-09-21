@@ -15,10 +15,7 @@ def get_bot_move():
     fen = request.json['fen']
     board = chess.Board(fen)
 
-    move = ""
-    for i in board.legal_moves:
-        move = i
-        break
+    move = random.choice(list(board.legal_moves))
 
     #Make this True when you want to default to Stockfish
     make_best_move = False

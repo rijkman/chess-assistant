@@ -4,58 +4,88 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChessAssistant</title>
+    
     <!-- Stylesheets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/chessboard-1.0.0.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    
     <!-- Libraries -->
-    <script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/chessboard-1.0.0.js')}}"></script>
-    <script type='module' src="{{ url_for('static', filename='js/chess.js')}}"></script>
-    <script type='module' src="{{ url_for('static', filename='js/stockfish-16.1-lite-single.js')}}"></script>
-    <script type='module' src="{{ url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
-</head>
-<body class='bg-dark'>
+    <script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chessboard-1.0.0.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/chess.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/stockfish-16.1-lite-single.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    
+    <style>
+        .chess-container {
+            padding-top: 1cm;
+        }
+        /* Flexbox to position controls card at the bottom of the chessboard */
+        .chessboard-and-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100%;
+        }
 
-<div class="container-sm" style="padding-top: 1cm">
+        /* Adjust spacing between the chessboard and info card */
+        .chessboard-card, .info-card {
+            padding-left: 0;
+            padding-right: 0;
+        }
+    </style>
+</head>
+<body class="bg-dark">
+
+<div class="container-sm chess-container">
     <div class="row justify-content-center text-center">
-        <div class="col-6">
-            <div id="myBoard" style="width: 500px"></div>
-        </div>
-        <div class="col-3">
-            <div class="card">
-                <div class="card-header">
-                    <span class="badge rounded-pill bg-success">
-                        Info
-                    </span>
+        <!-- Chessboard and Controls Area (Flexbox) -->
+        <div class="col-6 chessboard-and-controls">
+            <div id="myBoard" style="width: 500px;"></div>
+            <!-- Controls Card (aligned to the bottom of the chessboard) -->
+            <div class="controls-card" style="padding-top: 1cm;">
+                <div class="card" style="max-width: fit-content;">
+                    <div class="card-header">Controls</div>
+                    <div class="card-body">
+                        <form class="row g-3 align-items-center justify-content-center">
+                            <div class="col-auto">
+                                <input type="text" class="form-control" id="new-game-fen" placeholder="Enter FEN">
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-primary" id="start-new-game-button">Load FEN</button>
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-success" id="undo-button">Undo</button>
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-danger" id="reset-button">Reset</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <label>PGN:</label>
-                    <div id="pgn"></div>
-                    <label>Rating:</label>
-                    <div id="eval"></div>
-                    <div class="progress">
-                        <div class="progress-bar bg-secondary" style="width: 50%" role="progressbar"></div>
-                        <div class="progress-bar bg-black" style="width: 50%"></div>
+            </div>
+        </div>
+
+        <!-- Info and Move History Area -->
+        <div class="col-3 info-card">
+            <div class="container-sm">
+                <!-- Info Card -->
+                <div class="row g-3">
+                    <div class="card" style="min-height: 400px;">
+                        <div class="card-header">
+                            <span class="badge rounded-pill bg-success">Info</span>
+                        </div>
+                        <div class="card-body">
+                            <div id="pgn-table-holder"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row mx-auto" style="max-width: 40%; padding-top: 1cm">
-
-    </div>
-    <div class="row" style="padding-top: 1cm;">
-        <div class='card' style="max-width: fit-content;">
-            <div class="mb-3">
-                <label for="new-game-fen" class="form-label">New Game (FEN)</label>
-                <input type="text" class="form-control" id="new-game-fen" style="max-width: fit-content;">
-              </div>
-              <button type="submit" class="btn btn-primary">New Game</button>
-        </div>
-    </div>
 </div>
 
-
-<script type='module' src="{{ url_for('static', filename='js/main-board.js')}}"></script>
+<script type="module" src="{{ url_for('static', filename='js/main-board.js') }}"></script>
 </body>
 </html>
